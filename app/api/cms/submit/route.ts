@@ -1,63 +1,83 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { supabase } from "@/lib/supabase";
-import formidable from "formidable";
+import { NextRequest, NextResponse } from "next/server";
+import { storage, databases, BUCKET_ID, DATABASE_ID, COLLECTION_ID } from "@/lib/appwrite";
+import { ID } from "appwrite";
+import { writeFile } from 'fs/promises';
+import { join } from 'path';
+import { v4 as uuidv4 } from 'uuid';
+import { mkdir } from 'fs/promises';
+import { tmpdir } from 'os';
 
-type ResponseData = {
-  message?: string;
-  data?: any;
-  error?: string;
-};
-
-export const config = {
-  api: {
-    bodyParser: false, // Disable the default body parser
-  },
-};
-
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
-) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
-  const form = new formidable.IncomingForm();
-  form.parse(req, async (err, fields, files) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-
-    const { title, content } = fields;
-    const images = files.images as formidable.File[];
-
-    try {
-      // Upload multiple images to Supabase Storage
-      const imagePaths: string[] = [];
-      if (images && images.length > 0) {
-        for (const image of images) {
-          const fileName = `${Date.now()}-${image.name}`;
-          const { data, error } = await supabase.storage
-            .from("images")
-            .upload(fileName, image.toJSON().filepath);
-
-          if (error) throw error;
-          imagePaths.push(fileName);
-        }
+export async function POST(req: NextRequest) {
+  try {
+    // Create a temporary directory to store files
+    const formData = await req.formData();
+    
+    // Extract form fields
+    const title = formData.get('title') as string;
+    const content = formData.get('content') as string;
+    const visit_date = formData.get('visit_date') as string;
+    const visit_location = formData.get('visit_location') as string;
+    const visit_details = formData.get('visit_details') as string;
+    
+    // Handle multiple images
+    const imageFiles = formData.getAll('images') as File[];
+    const imagePaths: string[] = [];
+    
+    // Process and upload each image
+    if (imageFiles && imageFiles.length > 0) {
+      for (const imageFile of imageFiles) {
+        if (!imageFile.name) continue;
+        
+        // Create a temporary file
+        const tempDir = join(tmpdir(), 'upload-images');
+        await mkdir(tempDir, { recursive: true });
+        const tempFilePath = join(tempDir, imageFile.name);
+        
+        // Write the file to disk temporarily
+        const bytes = await imageFile.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        await writeFile(tempFilePath, buffer);
+        
+        // Generate a unique filename
+        const fileName = `${Date.now()}-${imageFile.name}`;
+        
+        // Upload to Appwrite Storage
+        const fileUpload = await storage.createFile(
+          BUCKET_ID,
+          ID.unique(),
+          buffer
+        );
+        
+        // Store the file ID for database reference
+        imagePaths.push(fileUpload.$id);
       }
-
-      // Insert data into the SQL database
-      const { data: postData, error: dbError } = await supabase
-        .from("posts")
-        .insert([{ title, content, image_paths: imagePaths }]);
-
-      if (dbError) throw dbError;
-
-      return res
-        .status(200)
-        .json({ message: "Post created successfully", data: postData });
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message });
     }
-  });
+    
+    // Create document in Appwrite Database
+    const document = await databases.createDocument(
+      DATABASE_ID,
+      COLLECTION_ID,
+      ID.unique(),
+      {
+        title,
+        content,
+        image_paths: imagePaths,
+        visit_date,
+        visit_location,
+        visit_details
+      }
+    );
+    
+    return NextResponse.json({ 
+      message: "Post created successfully", 
+      data: document 
+    });
+    
+  } catch (error: any) {
+    console.error('Error in API route:', error);
+    return NextResponse.json(
+      { error: error.message || 'Something went wrong' },
+      { status: 500 }
+    );
+  }
 }
