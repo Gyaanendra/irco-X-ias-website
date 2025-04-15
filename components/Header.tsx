@@ -1,3 +1,5 @@
+// Remove unused Link import or use it in your component
+// If you're not using Link, remove it from imports
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { cn } from '@/app/lib/utils';
