@@ -1,8 +1,10 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "../../components/header";
-import Footer from "@/components/Footer1"; // Add this import
+import PixelTrail from "../../components/PixelTrail"; // Import PixelTrail
+import MainFooter from "../../components/MainFooter"; // Import MainFooter
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,17 +23,44 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Header />
-        {children}
-        <Footer /> {/* Add this */}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        {/* Fixed PixelTrail Background */}
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            pointerEvents: "none",
+            zIndex: 0,
+          }}
+        >
+          <PixelTrail
+            gridSize={50}
+            trailSize={0.1}
+            maxAge={250}
+            interpolate={5}
+            color="#ffffff"
+            gooeyFilter={{ id: "custom-goo-filter", strength: 2 }}
+          />
+        </div>
+
+        {/* Fixed header */}
+        <div className="fixed top-0 left-0 w-full z-[9999] pointer-events-auto">
+          <Header />
+        </div>
+
+        {/* Main content container */}
+        <div className="pt-16 relative min-h-screen" data-scroll-container>
+          {children}
+          
+          {/* Footer added to layout */}
+          <MainFooter />
+        </div>
       </body>
     </html>
   );

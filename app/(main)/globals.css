@@ -1,1 +1,150 @@
 @import "tailwindcss";
+
+@font-face {
+    font-family: 'TAN-Pearl';
+    src: url('/FONTS/tan-pearl.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Sarpanch';
+    src: url('/FONTS/Sarpanch-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  /* Add these styles to your CSS file */
+@keyframes blob-movement {
+  0% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translate(-50%, -50%) scale(1.1) rotate(2deg);
+  }
+  66% {
+    transform: translate(-50%, -50%) scale(0.9) rotate(-2deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.05) rotate(1deg);
+  }
+}
+
+.animate-blob {
+  animation: blob-movement 25s infinite alternate ease-in-out;
+}
+
+/* Add this to your existing styles */
+/* Advanced 3D blob animations */
+@keyframes blob-float {
+  0% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg) translateZ(0px);
+    border-radius: 60% 40% 70% 30% / 60% 30% 70% 40%;
+    filter: blur(40px);
+  }
+  25% {
+    border-radius: 50% 50% 40% 60% / 40% 60% 40% 60%;
+    filter: blur(50px);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.05) rotate(5deg) translateZ(20px);
+    border-radius: 30% 70% 50% 50% / 40% 40% 60% 60%;
+    filter: blur(45px);
+  }
+  75% {
+    border-radius: 40% 60% 30% 70% / 60% 30% 70% 40%;
+    filter: blur(55px);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.95) rotate(-5deg) translateZ(-10px);
+    border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%;
+    filter: blur(40px);
+  }
+}
+
+@keyframes background-shift {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+@keyframes pulse-glow {
+  0% {
+    opacity: 0.3;
+    box-shadow: 0 0 30px 10px rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    opacity: 0.5;
+    box-shadow: 0 0 50px 15px rgba(255, 255, 255, 0.2);
+  }
+  100% {
+    opacity: 0.3;
+    box-shadow: 0 0 30px 10px rgba(255, 255, 255, 0.1);
+  }
+}
+
+.animate-blob-3d {
+  animation: blob-float 30s infinite alternate ease-in-out;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.animate-background {
+  animation: background-shift 20s infinite linear;
+  background-size: 200% 200%;
+}
+
+.animate-glow {
+  animation: pulse-glow 8s infinite ease-in-out;
+}
+
+.hero-section {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+  }
+  
+  #globe-text-content {
+    transition: opacity 0.5s ease;
+  }
+  
+  #globe-text-content > * {
+    transition: transform 0.8s ease;
+  }
+  /* Hide scrollbar for all elements */
+::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+* {
+    -ms-overflow-style: none;  /* Internet Explorer and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Add this after your existing blob-movement animation */
+@keyframes blob-transform {
+  0% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    border-radius: 60% 40% 70% 30% / 40% 50% 50% 60%;
+  }
+  25% {
+    transform: translate(-50%, -50%) scale(1.05) rotate(2deg);
+    border-radius: 50% 50% 40% 60% / 60% 40% 60% 40%;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(0.95) rotate(-1deg);
+    border-radius: 40% 60% 50% 50% / 50% 60% 40% 50%;
+  }
+  75% {
+    transform: translate(-50%, -50%) scale(1.05) rotate(1deg);
+    border-radius: 60% 40% 50% 50% / 40% 50% 60% 50%;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    border-radius: 40% 60% 30% 70% / 50% 40% 60% 50%;
+  }
+}

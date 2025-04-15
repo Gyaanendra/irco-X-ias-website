@@ -5,6 +5,7 @@
     font-size: 12px;
     text-transform: uppercase;
     margin-top: 40px;
+    
 
     ul{
         width: 50%;
@@ -12,11 +13,12 @@
         overflow: hidden;
         list-style-type: none;
         padding: 0;
+        color: #ffffff;
     }
 
     li{
         span{
-            color: #9f9689;
+            color: #ffffff;
         }
     }
 }
