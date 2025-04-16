@@ -1,3 +1,5 @@
+"use client"; // Add this directive at the top of the file
+
 // Remove unused Link import or use it in your component
 // If you're not using Link, remove it from imports
 import React, { useState, useEffect } from 'react';
