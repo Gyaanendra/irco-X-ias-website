@@ -3,11 +3,13 @@
 import { useEffect, useState, useRef } from "react"
 import Aurora from "./ui/Aurora"
 interface NoiseGradientBackgroundProps {
-  className?: string
-  blobCount?: number
-  seed?: number
-  interactive?: boolean
-  starCount?: number
+  grainOpacity?: number;
+  gradientDirection?: 'top-to-bottom' | 'bottom-to-top' | 'left-to-right' | 'right-to-left';
+  className?: string;
+  blobCount?: number;
+  seed?: number;
+  interactive?: boolean;
+  starCount?: number;
 }
 
 // Seeded random number generator

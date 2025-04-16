@@ -5,6 +5,7 @@ import ThreeGlobe from "three-globe";
 import { useThree, Canvas, extend } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import countries from "@/data/globe.json";
+import * as THREE from 'three'; // Add if missing
 declare module "@react-three/fiber" {
   interface ThreeElements {
     threeGlobe: ThreeElements["mesh"] & {
@@ -64,7 +65,7 @@ const numbersOfRings = [0];
 
 export function Globe({ globeConfig, data }: WorldProps) {
   const globeRef = useRef<ThreeGlobe | null>(null);
-  const groupRef = useRef();
+  const groupRef = useRef<THREE.Group | null>(null); // Add type parameter
   const [isInitialized, setIsInitialized] = useState(false);
 
   const defaultProps = {
@@ -307,3 +308,12 @@ export function genRandomNumbers(min: number, max: number, count: number) {
 
   return arr;
 }
+
+// Event handlers should use proper Three.js event types
+function onPointerOut(event: THREE.Event) { /* ... */ }
+
+// Canvas element references should use correct types
+const canvasRef = useRef<HTMLCanvasElement>(null);
+
+// Animation frames should use proper types
+const rafRef = useRef<number | null>(null);
